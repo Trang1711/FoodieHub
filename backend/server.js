@@ -46,7 +46,7 @@ app.use('/api', foodRoutes);
 app.use('/api/admin', adminOrderRoutes);
   
 // Health check endpoint
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (req, res) => {r
   res.json({ 
     status: 'OK', 
     message: 'Server đang hoạt động',

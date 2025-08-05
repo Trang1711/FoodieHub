@@ -3,7 +3,7 @@ const router = express.Router();
 const { getConnection } = require('../database_sqlite');
 
 // Lấy tất cả foods
-router.get('/foods', (req, res) => {
+router.get('/', (req, res) => {
   const db = getConnection();
   
   db.all('SELECT * FROM foods WHERE is_available = 1 ORDER BY rating DESC', (err, foods) => {
@@ -23,7 +23,7 @@ router.get('/foods', (req, res) => {
 });
 
 // Lấy foods theo category
-router.get('/foods/category/:category', (req, res) => {
+router.get('/category/:category', (req, res) => {
   const { category } = req.params;
   const db = getConnection();
   
@@ -45,7 +45,7 @@ router.get('/foods/category/:category', (req, res) => {
 });
 
 // Lấy chi tiết food
-router.get('/foods/:id', (req, res) => {
+router.get('/:id', (req, res) => {
   const { id } = req.params;
   const db = getConnection();
   
@@ -73,7 +73,7 @@ router.get('/foods/:id', (req, res) => {
 });
 
 // Tìm kiếm foods
-router.get('/foods/search/:keyword', (req, res) => {
+router.get('/search/:keyword', (req, res) => {
   const { keyword } = req.params;
   const db = getConnection();
   
@@ -90,6 +90,27 @@ router.get('/foods/search/:keyword', (req, res) => {
     res.json({
       success: true,
       data: foods
+    });
+  });
+});
+
+// Lấy side dishes cho một món ăn
+router.get('/:id/side-dishes', (req, res) => {
+  const { id } = req.params;
+  const db = getConnection();
+  
+  db.all('SELECT * FROM side_dishes WHERE main_dish_id = ?', [id], (err, sideDishes) => {
+    if (err) {
+      console.error('❌ Lỗi lấy side dishes:', err);
+      return res.status(500).json({
+        success: false,
+        message: 'Lỗi server, vui lòng thử lại sau'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: sideDishes
     });
   });
 });

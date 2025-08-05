@@ -103,6 +103,25 @@ const connectDB = () => {
         reject(err);
       } else {
         console.log('✅ Bảng order_items đã sẵn sàng!');
+      }
+    });
+
+    // Tạo bảng side_dishes nếu chưa tồn tại
+    db.run(`
+      CREATE TABLE IF NOT EXISTS side_dishes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        main_dish_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        price INTEGER NOT NULL,
+        image TEXT,
+        FOREIGN KEY (main_dish_id) REFERENCES foods (id)
+      )
+    `, (err) => {
+      if (err) {
+        console.error('❌ Lỗi tạo bảng side_dishes:', err);
+        reject(err);
+      } else {
+        console.log('✅ Bảng side_dishes đã sẵn sàng!');
         console.log('✅ Database đã sẵn sàng!');
         resolve();
       }

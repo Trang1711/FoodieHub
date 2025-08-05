@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,19 +8,36 @@ import {
   Alert,
   ScrollView,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 import { useCart } from '../context/CartContext';
-
-const extras = [
-  { id: 'e1', name: 'Trứng gà', price: 7000 },
-  { id: 'e2', name: 'Giò lụa', price: 10000 },
-  { id: 'e3', name: 'Chả cốm', price: 12000 },
-];
+import ApiService from '../services/api';
 
 export default function FoodDetailScreen({ route, navigation }) {
   const { food } = route.params;
   const [selectedExtras, setSelectedExtras] = useState([]);
+  const [sideDishes, setSideDishes] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
+
+  useEffect(() => {
+    loadSideDishes();
+  }, [food.id]);
+
+  const loadSideDishes = async () => {
+    try {
+      setLoading(true);
+      const response = await ApiService.getSideDishes(food.id);
+      if (response.success) {
+        setSideDishes(response.data);
+      }
+    } catch (error) {
+      console.error('Lỗi lấy side dishes:', error);
+      Alert.alert('Lỗi', 'Không thể tải món ăn kèm');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleExtra = (extraId) => {
     setSelectedExtras((prev) =>
@@ -31,7 +48,7 @@ export default function FoodDetailScreen({ route, navigation }) {
   };
 
   const getSelectedExtras = () => {
-    return extras.filter(extra => selectedExtras.includes(extra.id));
+    return sideDishes.filter(extra => selectedExtras.includes(extra.id));
   };
 
   const getTotalPrice = () => {
@@ -101,21 +118,28 @@ export default function FoodDetailScreen({ route, navigation }) {
           {/* Món ăn kèm */}
           <View style={styles.extrasSection}>
             <Text style={styles.sectionTitle}>Món ăn kèm</Text>
-            <View style={styles.extrasContainer}>
-              {extras.map((extra) => (
-                <TouchableOpacity
-                  key={extra.id}
-                  style={[
-                    styles.extraItem,
-                    selectedExtras.includes(extra.id) && styles.extraItemSelected,
-                  ]}
-                  onPress={() => toggleExtra(extra.id)}
-                >
-                  <Text style={styles.extraName}>{extra.name}</Text>
-                  <Text style={styles.extraPrice}>+{extra.price.toLocaleString()}đ</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+            {loading ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#ff6600" />
+                <Text style={styles.loadingText}>Đang tải món ăn kèm...</Text>
+              </View>
+            ) : (
+              <View style={styles.extrasContainer}>
+                {sideDishes.map((extra) => (
+                  <TouchableOpacity
+                    key={extra.id}
+                    style={[
+                      styles.extraItem,
+                      selectedExtras.includes(extra.id) && styles.extraItemSelected,
+                    ]}
+                    onPress={() => toggleExtra(extra.id)}
+                  >
+                    <Text style={styles.extraName}>{extra.name}</Text>
+                    <Text style={styles.extraPrice}>+{extra.price.toLocaleString()}đ</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
           </View>
 
           {/* Nút thêm vào giỏ hàng */}
@@ -263,5 +287,14 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 14,
+    color: '#666',
   },
 });

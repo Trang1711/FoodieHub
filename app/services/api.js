@@ -121,7 +121,7 @@ class ApiService {
   // Lấy tất cả foods
   static async getAllFoods() {
     try {
-      const response = await fetch(`${API_BASE_URL}/foods`);
+      const response = await fetch(`${API_BASE_URL}`);
       const data = await response.json();
       return data;
     } catch (error) {
@@ -162,6 +162,18 @@ class ApiService {
       return data;
     } catch (error) {
       console.error('Lỗi API searchFoods:', error);
+      throw error;
+    }
+  }
+
+  // Lấy side dishes cho một món ăn
+  static async getSideDishes(foodId) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/${foodId}/side-dishes`);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Lỗi API getSideDishes:', error);
       throw error;
     }
   }

@@ -76,7 +76,8 @@ const HomeScreen = ({ navigation }) => {
       originalPrice: '45.000₫',
       discountPrice: '32.000₫',
       discount: '-29%',
-      image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400',
+      // image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400',
+      image: 'https://burgerking.vn/media/catalog/product/cache/1/image/1800x/040ec09b1e35df139433887a97daa66f/e/x/exc_whopper_2.jpg',
       isNew: false
     },
     {
@@ -111,7 +112,7 @@ const HomeScreen = ({ navigation }) => {
         setFoodItems(response.data);
       } else {
         Alert.alert('Lỗi', 'Không thể tải dữ liệu món ăn');
-      }
+      } 
     } catch (error) {
       console.error('Lỗi loadFoods:', error);
       Alert.alert('Lỗi', 'Không thể kết nối đến server');
