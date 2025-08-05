@@ -1,0 +1,90 @@
+### Food Delivery API Tests
+
+### 1. Health Check
+GET http://localhost:5000/api/health
+
+### 2. Đăng ký tài khoản
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "123456",
+  "full_name": "Nguyễn Văn Test",
+  "phone": "0123456789",
+  "address": "123 Đường Test, Quận 1, TP.HCM"
+}
+
+### 3. Đăng ký tài khoản khác
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "user2@example.com",
+  "password": "123456",
+  "full_name": "Trần Thị User",
+  "phone": "0987654321",
+  "address": "456 Đường User, Quận 2, TP.HCM"
+}
+
+### 4. Đăng nhập
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "123456"
+}
+
+### 5. Đăng nhập sai mật khẩu
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "wrongpassword"
+}
+
+### 6. Lấy thông tin profile (cần token)
+GET http://localhost:5000/api/auth/profile
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### 7. Cập nhật thông tin profile (cần token)
+PUT http://localhost:5000/api/auth/profile
+Content-Type: application/json
+Authorization: Bearer YOUR_TOKEN_HERE
+
+{
+  "full_name": "Nguyễn Văn Test Updated",
+  "phone": "0123456789",
+  "address": "789 Đường Updated, Quận 3, TP.HCM"
+}
+
+### 8. Test validation - Email không hợp lệ
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "invalid-email",
+  "password": "123456",
+  "full_name": "Test User"
+}
+
+### 9. Test validation - Mật khẩu quá ngắn
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "123",
+  "full_name": "Test User"
+}
+
+### 10. Test validation - Thiếu thông tin bắt buộc
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "123456"
+} 
